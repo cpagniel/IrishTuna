@@ -83,6 +83,6 @@ run figure_11
 run figure_12
 run figure_13
 
-%% Plot Eddy Regional Histograms
+%% Figure 14
 
-run plot_eddy_regional_histograms
+run figure_14
