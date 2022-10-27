@@ -163,7 +163,7 @@ for j = 1
         text(20,955,['n = ' num2str(N)],'FontSize',20,'FontWeight','bold');
 
         cd([fdir 'figures']);
-        saveas(gcf,[rg '_' ss '.png']);
+        saveas(gcf,['figure_6_' rg '_' ss '.png']);
 
         keyboard()
 

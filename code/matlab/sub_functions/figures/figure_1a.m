@@ -84,7 +84,7 @@ clear icon*
 %% Save figure.
 
 cd([fdir 'figures']);
-saveas(gcf,'overview_map.png');
+saveas(gcf,'figure_1a.png');
 
 %% Clear
 

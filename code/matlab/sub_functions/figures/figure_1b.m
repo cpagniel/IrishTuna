@@ -71,7 +71,7 @@ clear p
 %% Save
 
 cd([fdir 'figures']);
-saveas(gcf,'bin_map.png')
+saveas(gcf,'figure_1b.png')
 
 %% Clear
 

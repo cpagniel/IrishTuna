@@ -133,7 +133,7 @@ for i = 1:length(unique(META.Season))
     %% Save figure.
 
     cd([fdir 'figures']);
-    saveas(gcf,['seasonal_map_' num2str(i) '.png']);
+    saveas(gcf,['figure_2_' num2str(i) '.png']);
 
     %% Clear
 

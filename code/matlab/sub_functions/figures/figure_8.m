@@ -74,7 +74,7 @@ leg = legend(m([1 11 2 4 8 3]),'Coastal Ireland','Bay of Biscay',...
 clear m
 
 cd([fdir 'figures']);
-saveas(gcf,['timeseries_' num2str(filename(1:7)) '.png']);
+saveas(gcf,['figure_8_timeseries_' num2str(filename(1:7)) '.png']);
 
 clear leg
 clear cmap
@@ -151,7 +151,7 @@ clear MM
 clear icon*
 
 cd([fdir 'figures']);
-saveas(gcf,['map_' num2str(filename(1:7)) '.png']);
+saveas(gcf,['figure_8_map_' num2str(filename(1:7)) '.png']);
 
 clear ax* c* h* m M *LIMS
 clear ans

@@ -82,7 +82,7 @@ m_ruler([.78 .98],.09,2,'fontsize',16,'ticklength',0.01);
 %% Save figure.
 
 cd([fdir 'figures']);
-saveas(gcf,'Med_map.png');
+saveas(gcf,'figure_S2.png');
 
 %% Add Legend
 
@@ -95,7 +95,7 @@ clear icon*
 %% Save figure.
 
 cd([fdir 'figures']);
-saveas(gcf,'Med_map_with_legend.png');
+saveas(gcf,'figure_S2_legend.png');
 
 %% Clear
 

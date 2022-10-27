@@ -72,9 +72,8 @@ run figure_6
 run figure_7
 
 %% Figure 8
-% This code needs to be reviewed.
 
-run plot_timeseries_IrishTuna
+run figure_8
 
 %% Figure 9 to 13 
 
@@ -86,7 +85,7 @@ run figure_13
 
 %% Figure 14
 
-run plot_eddy_regional_histograms
+run figure_14
 
 %% Figure S2
 

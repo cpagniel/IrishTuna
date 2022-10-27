@@ -81,7 +81,7 @@ set(gca,'Position',p);
 %% Save
 
 cd([fdir 'figures']);
-saveas(gcf,'mean_max_depth_map.png')
+saveas(gcf,'figure_7.png')
 
 %% Clear
 
