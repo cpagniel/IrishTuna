@@ -4,7 +4,7 @@
 %
 % Author: Camille Pagniello, Stanford University (cpagniel@stanford.edu)
 % 
-% Last Update: 09/27/2022
+% Last Update: 10/27/2022
 %
 %% Requirements
 % Also requires m_map toolbox: https://www.eoas.ubc.ca/~rich/map.html
@@ -71,6 +71,11 @@ run figure_6
 
 run figure_7
 
+%% Figure 8
+% This code needs to be reviewed.
+
+run plot_timeseries_IrishTuna
+
 %% Figure 9 to 13 
 
 run figure_9
@@ -79,11 +84,10 @@ run figure_11
 run figure_12
 run figure_13
 
-%% Plot TimeSeries
-% This code needs to be reviewed.
-
-run plot_timeseries_IrishTuna
-
-%% Plot Eddy Regional Histograms
+%% Figure 14
 
 run plot_eddy_regional_histograms
+
+%% Figure S2
+
+run figure_S2
