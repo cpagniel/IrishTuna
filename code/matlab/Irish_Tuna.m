@@ -12,7 +12,7 @@
 warning off;
 
 % Location of Project on Google Drive
-fdir = '/Volumes/GoogleDrive-115844804207666893078/My Drive/Projects/IrishTuna/';
+fdir = '/Users/cpagniello/Library/CloudStorage/GoogleDrive-cpagniel@stanford.edu/My Drive/Projects/Completed/IrishTuna/github/IrishTuna/';
 
 %% Load Tag Data
 
@@ -62,6 +62,10 @@ run figure_1b
 %% Figure 2
 
 run figure_2
+
+%% Figure 3
+
+run figure_3abc
 
 %% Figure 6
 

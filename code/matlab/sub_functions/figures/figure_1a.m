@@ -47,6 +47,10 @@ for i = 1:length(yyyy)
 end
 clear i
 
+%% Plot ICCAT regions.
+
+m_line([-45 -45],[20 70],'linewi',2,'color','k','linestyle','--')
+
 %% Plot ocean regions.
 
 m_line(regions.NB.bndry(1,:),regions.NB.bndry(2,:),'linewi',2,'color','k');
@@ -84,7 +88,7 @@ clear icon*
 %% Save figure.
 
 cd([fdir 'figures']);
-saveas(gcf,'figure_1a.png');
+exportgraphics(gcf,'figure_1a.png','Resolution',300);
 
 %% Clear
 

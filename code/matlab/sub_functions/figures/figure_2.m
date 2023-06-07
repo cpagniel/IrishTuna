@@ -84,6 +84,10 @@ for i = 1:length(unique(META.Season))
     end
     clear j
 
+    %% Plot ICCAT regions.
+
+    m_line([-45 -45],[20 70],'linewi',2,'color','k','linestyle','--')
+
     %% Plot ocean regions.
 
     m_line(regions.NB.bndry(1,:),regions.NB.bndry(2,:),'linewi',2,'color','k');
@@ -133,7 +137,7 @@ for i = 1:length(unique(META.Season))
     %% Save figure.
 
     cd([fdir 'figures']);
-    saveas(gcf,['figure_2_' num2str(i) '.png']);
+    exportgraphics(gcf,['figure_2_' num2str(i) '.png'],'Resolution',300);
 
     %% Clear
 

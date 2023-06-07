@@ -27,6 +27,10 @@ m_gshhs_i('patch',[.7 .7 .7]);
 
 hold on
 
+%% Plot ICCAT regions.
+
+m_line([-45 -45],[20 70],'linewi',2,'color','k','linestyle','--')
+
 %% Plot ocean regions.
 
 m_line(regions.NB.bndry(1,:),regions.NB.bndry(2,:),'linewi',2,'color','k');
@@ -71,7 +75,7 @@ clear p
 %% Save
 
 cd([fdir 'figures']);
-saveas(gcf,'figure_1b.png')
+exportgraphics(gcf,'figure_1b.png','Resolution',300)
 
 %% Clear
 
