@@ -51,6 +51,10 @@ CC.Region(inpolygon(CC.SSHMaxLongitude,CC.SSHMaxLatitude,regions.Med.bndry(1,:),
 
 clear dd
 
+%% Stats
+
+run table_S2
+
 %% Figure 1a
 
 run figure_1a
@@ -65,7 +69,7 @@ run figure_2
 
 %% Figure 3
 
-run figure_3abc
+run figure_3
 
 %% Figure 6
 
@@ -90,6 +94,10 @@ run figure_13
 %% Figure 14
 
 run figure_14
+
+%% Figure S1 & Table S2
+
+run table_S2_and_figure_S1
 
 %% Figure S2
 

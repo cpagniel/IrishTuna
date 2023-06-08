@@ -150,3 +150,4 @@ end
 
 clear i
 clear tmp
+clear MM
