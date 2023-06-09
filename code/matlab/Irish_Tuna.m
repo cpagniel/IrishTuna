@@ -71,6 +71,21 @@ run figure_2
 
 run figure_3
 
+%% Figure 4
+
+run figure_4
+
+%% Figure S1 & Table S2
+
+run table_S2_and_figure_S1
+
+
+
+
+
+
+%% OLD CODE
+
 %% Figure 6
 
 run figure_6
@@ -90,14 +105,6 @@ run figure_10
 run figure_11
 run figure_12
 run figure_13
-
-%% Figure 14
-
-run figure_14
-
-%% Figure S1 & Table S2
-
-run table_S2_and_figure_S1
 
 %% Figure S2
 
