@@ -1,198 +1,251 @@
-%% figure_4.m
-% Sub-function of Irish_Tuna.m; plots eddy histograms with each region
+%% figure_3abc
+% Sub-function of Irish_Tuna.m; plots zoomed in bin map, ADT
+% and EKE in Newfoundland Basin hotspot
 
-%% Hotspots
+%% (a) Bin Map
 
-% 2 = Coastal Ireland
-% 3 = Bay of Biscay
-% 4 = West European Basin
-% 1 = Newfoundland Basin (including Mann Eddy)
-% 5 = Mediterranean
-% 0 = Outside
+% figure
+figure('Position',[667 184 685 586]);
 
-%% Colormap
+LATLIMS = regions.NB.lat1; LONLIMS = [regions.NB.lon2(1) regions.NB.lon1(2)];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
 
-cmap = [127 201 127; 255 255 153; 190 174 212; 56 108 176; 253 192 134; 128 128 128]./256;
+% bin map
+binned.LONedges = -80:1:40;
+binned.LATedges = 20:1:70;
 
-%% Generate histograms.
+[binned.N,binned.LONmid,binned.LATmid] = twodhist(META.Longitude,META.Latitude,binned.LONedges,binned.LATedges);
 
-sub = [];
-for j = 1:2 % % loop through ACE and CE
+m_pcolor(binned.LONmid,binned.LATmid,binned.N); shading flat;
 
-    cnt = 0;
+hold on
 
-    for i = [2 3 4 1 5 0] % loop through each hotspot
+% bathymetry
+m_etopo2('contour',-5000:1000:-2000,'edgecolor','k','LineWidth',1);
 
-        cnt = cnt + 1;
+hold on
 
-        %% Get eddy data in hotspot.
-        if j == 1
-            ind = ismember(dates.AC,dates.META(META.Region == i));
-            tmp = AC(ind,:);
-            tmp = tmp(tmp.Region == i,:);
+% outline
+m_patch([regions.NB.lon2 regions.NB.lon2(1) regions.NB.lon2(1)],...
+[regions.NB.lat2 fliplr(regions.NB.lat2)],'w');
 
-            eddies.stats.AC.realizations(cnt,1) = height(tmp);
+m_plot(regions.NB.lon2,regions.NB.lat2,'k-','LineWidth',2);
 
-            [~,ind,~] = unique(tmp.TrajectoryID,'last');
-            tmp = tmp(ind,:);
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
 
-            eddies.stats.AC.cnt(cnt,1) = height(tmp);
+m_northarrow(-49,50.5,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
-            eddies.stats.AC.median.Ls(cnt,1) = median(tmp.SpeedRadius./1000);
-            eddies.stats.AC.mad.Ls(cnt,1) = mad(tmp.SpeedRadius./1000,1);
-            eddies.stats.AC.median.A(cnt,1) = median(tmp.Amplitude.*100);
-            eddies.stats.AC.mad.A(cnt,1) = mad(tmp.Amplitude.*100,1);
-            eddies.stats.AC.median.Uavg(cnt,1) = median(tmp.SpeedAverage.*100);
-            eddies.stats.AC.mad.Uavg(cnt,1) = mad(tmp.SpeedAverage.*100,1);
-            eddies.stats.AC.median.Life(cnt,1) = median(double(tmp.DaysSinceFirstDetection)./7);
-            eddies.stats.AC.mad.Life(cnt,1) = mad(double(tmp.DaysSinceFirstDetection)./7,1);
+% colormap
+h = colorbar('FontSize',20); 
+colormap(flipud(hot(1500)));
+ylabel(h,'Number of Daily Geolocations','FontSize',22);
+caxis([0 75]);
+h.Ticks = 0:25:75;
 
-            sub.AC{cnt} = tmp;
-        elseif j == 2
-            ind = ismember(dates.CC,dates.META(META.Region == i));
-            tmp = CC(ind,:);
-            tmp = tmp(tmp.Region == i,:);
+% adjust position of elements
+p_global = get(gca,'Position');
+h.Position(1) = h.Position(1) + 0.005;
+h.Position(2) = h.Position(2) + 0.08;
+h.Position(3) = h.Position(3) + 0.01;
+h.Position(4) = h.Position(4) - 0.12;
+set(gca,'Position',p_global);
 
-            eddies.stats.CC.realizations(cnt,1) = height(tmp);
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_3a.png','Resolution',300)
 
-            [~,ind,~] = unique(tmp.TrajectoryID,'last');
-            tmp = tmp(ind,:);
+close gcf
 
-            eddies.stats.CC.cnt(cnt,1) = height(tmp);
+clear h
+clear ans
+clear p_global
+clear binned
 
-            eddies.stats.CC.median.Ls(cnt,1) = median(tmp.SpeedRadius./1000);
-            eddies.stats.CC.mad.Ls(cnt,1) = mad(tmp.SpeedRadius./1000,1);
-            eddies.stats.CC.median.A(cnt,1) = median(tmp.Amplitude.*100);
-            eddies.stats.CC.mad.A(cnt,1) = mad(tmp.Amplitude.*100,1);
-            eddies.stats.CC.median.Uavg(cnt,1) = median(tmp.SpeedAverage.*100);
-            eddies.stats.CC.mad.Uavg(cnt,1) = mad(tmp.SpeedAverage.*100,1);
-            eddies.stats.CC.median.Life(cnt,1) = median(double(tmp.DaysSinceFirstDetection)./7);
-            eddies.stats.CC.mad.Life(cnt,1) = mad(double(tmp.DaysSinceFirstDetection)./7,1);
+%% (b) EKE
 
-            sub.CC{cnt} = tmp;
-        end
+% calculate EKE
+cd([fdir 'data/SSH']);
+ADT.NB.ugosa = ncread('NB_SSH.nc','ugosa'); ADT.NB.vgosa = ncread('NB_SSH.nc','vgosa'); 
 
-        %% Plot hisotgrams and compute statistics.
+ADT.NB.EKE = (mean(ADT.NB.ugosa(:,:,ind.SSH).^2,3) + mean(ADT.NB.vgosa(:,:,ind.SSH).^2,3))./2;
 
-        figure(1);
+% figure
+figure('Position',[667 184 685 586]);
 
-        histogram(tmp.SpeedRadius./1000,...
-            0:5:200,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
-        hold on
-        axis tight;
-        axis square;
-        ylim([0 0.4]);
-        set(gca,'FontSize',22,'LineWidth',2);
-        set(gca,'YTickLabel',get(gca,'YTick')*100);
-        ylabel('% of Observations');
-        xlabel('Speed Radius (km)');
+LATLIMS = regions.NB.lat1; LONLIMS = [regions.NB.lon2(1) regions.NB.lon1(2)];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
 
-        if i  == 0
-            cd([fdir 'figures']);
-            if j == 1
-                exportgraphics(gcf,'figure_4a.png','Resolution',300);
-            elseif j == 2
-                exportgraphics(gcf,'figure_4e.png','Resolution',300);
-            end
-        end
+% plot EKE
+m_pcolor(ADT.NB.lon,ADT.NB.lat,ADT.NB.EKE.'); shading flat;
 
-        figure(2);
+hold on
 
-        histogram(tmp.Amplitude.*100,...
-            0:2.5:100,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
-        hold on
-        axis tight;
-        axis square;
-        ylim([0 1]);
-        xticks([0 25 50 75 100]);
-        set(gca,'FontSize',22,'LineWidth',2);
-        set(gca,'YTickLabel',get(gca,'YTick')*100);
-        ylabel('% of Observations');
-        xlabel('Amplitude (cm)');
+% bathymetry
+m_etopo2('contour',-5000:1000:-2000,'edgecolor','k','LineWidth',1);
 
-        if i  == 0
-            cd([fdir 'figures']);
-            if j == 1
-                exportgraphics(gcf,'figure_4b.png','Resolution',300);
-            elseif j == 2
-                exportgraphics(gcf,'figure_4f.png','Resolution',300);
-            end
-        end
+hold on
 
-        figure(3);
+% outline
+m_patch([regions.NB.lon2 regions.NB.lon2(1) regions.NB.lon2(1)],...
+[regions.NB.lat2 fliplr(regions.NB.lat2)],'w');
 
-        histogram(tmp.SpeedAverage.*100,...
-            0:3.75:150,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
-        hold on
-        axis tight;
-        axis square;
-        ylim([0 0.6]);
-        set(gca,'FontSize',22,'LineWidth',2);
-        set(gca,'YTickLabel',get(gca,'YTick')*100);
-        ylabel('% of Observations');
-        xlabel('U_{avg} (cm/s)');
+m_plot(regions.NB.lon2,regions.NB.lat2,'k-','LineWidth',2);
 
-        if i  == 0
-            cd([fdir 'figures']);
-            if j == 1
-                exportgraphics(gcf,'figure_4c.png','Resolution',300);
-            elseif j == 2
-                exportgraphics(gcf,'figure_4g.png','Resolution',300);
-            end
-        end
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
 
-        figure(4);
+m_northarrow(-49,50.5,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
-        histogram(double(tmp.DaysSinceFirstDetection)./7,...
-            0:1.6:64,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
-        hold on
-        axis tight;
-        axis square;
-        ylim([0 0.5]); xlim([0 65]);
-        set(gca,'FontSize',22,'LineWidth',2);
-        set(gca,'YTickLabel',get(gca,'YTick')*100);
-        ylabel('% of Observations');
-        xlabel('Lifetime (weeks)');
+% colormap
+caxis([0 0.32]); cmocean matter;
+h = colorbar('Fontsize',20); 
+h.FontSize = 18; h.Ticks = 0:0.04:0.32; 
+ylabel(h,'Mean Eddy Kinetic Energy (m^2/s^2)','FontSize',22);
 
-        if i  == 0
-            cd([fdir 'figures']);
-            if j == 1
-                exportgraphics(gcf,'figure_4d.png','Resolution',300);
-            elseif j == 2
-                exportgraphics(gcf,'figure_4h.png','Resolution',300);
-            end
-        end
-    end
-    clear ind
-    clear tmp
+% adjust position of elements
+p_global = get(gca,'Position');
+h.Position(1) = h.Position(1) + 0.005;
+h.Position(2) = h.Position(2) + 0.08;
+h.Position(3) = h.Position(3) + 0.01;
+h.Position(4) = h.Position(4) - 0.12;
+set(gca,'Position',p_global);
 
-    close all
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_3b.png','Resolution',300)
 
-end
-clear i
-clear j
-clear cnt
+close gcf
 
-%% Wilcoxon Rank Sum Test
-% H0: Data in X and Y are samples from continous distributions with equal
-% medians.
-% HA: Data in X and Y are smaples from continous distributions whose
-% medians are not equal.
+clear ans
+clear h
+clear p_global
 
-for i = 1:6
-    for j = 1:6
-        [eddies.stats.AC.p.Ls(i,j),eddies.stats.AC.h.Ls(i,j),eddies.stats.AC.tstat.Ls(i,j)] = ranksum(sub.AC{i}.SpeedRadius/1000,sub.AC{j}.SpeedRadius/1000);
-        [eddies.stats.AC.p.A(i,j),eddies.stats.AC.h.A(i,j),eddies.stats.AC.tstat.A(i,j)] = ranksum(sub.AC{i}.Amplitude*100,sub.AC{j}.Amplitude*100);
-        [eddies.stats.AC.p.Uavg(i,j),eddies.stats.AC.h.Uavg(i,j),eddies.stats.AC.tstat.Uavg(i,j)] = ranksum(sub.AC{i}.SpeedAverage*100,sub.AC{j}.SpeedAverage*100);
-        [eddies.stats.AC.p.Life(i,j),eddies.stats.AC.h.Life(i,j),eddies.stats.AC.tstat.Life(i,j)] = ranksum(double(sub.AC{i}.DaysSinceFirstDetection)/7,double(sub.AC{j}.DaysSinceFirstDetection)/7);
+%% (c) ADT
 
-        [eddies.stats.CC.p.Ls(i,j),eddies.stats.CC.h.Ls(i,j),eddies.stats.CC.tstat.Ls(i,j)] = ranksum(sub.CC{i}.SpeedRadius/1000,sub.CC{j}.SpeedRadius/1000);
-        [eddies.stats.CC.p.A(i,j),eddies.stats.CC.h.A(i,j),eddies.stats.CC.tstat.A(i,j)] = ranksum(sub.CC{i}.Amplitude*100,sub.CC{j}.Amplitude*100);
-        [eddies.stats.CC.p.Uavg(i,j),eddies.stats.CC.h.Uavg(i,j),eddies.stats.CC.tstat.Uavg(i,j)] = ranksum(sub.CC{i}.SpeedAverage*100,sub.CC{j}.SpeedAverage*100);
-        [eddies.stats.CC.p.Life(i,j),eddies.stats.CC.h.Life(i,j),eddies.stats.CC.tstat.Life(i,j)] = ranksum(double(sub.CC{i}.DaysSinceFirstDetection)/7,double(sub.CC{j}.DaysSinceFirstDetection)/7);
+% load ADT
+cd([fdir 'data/SSH']);
+ADT.NB.adt = ncread('NB_SSH.nc','adt');
+ADT.NB.time = ncread('NB_SSH.nc','time'); ADT.NB.time = datetime(1950,01,01,00,00,00) + days(ADT.NB.time);
+ADT.NB.lon = ncread('NB_SSH.nc','longitude'); ADT.NB.lat = ncread('NB_SSH.nc','latitude');
 
-    end
-end
-clear i
-clear j
-clear sub
+dates.SSH = datetime(year(ADT.NB.time),month(ADT.NB.time),day(ADT.NB.time));
+ind.SSH = ismember(dates.SSH,dates.META(META.Region == 1));
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.NB.lat1; LONLIMS = [regions.NB.lon2(1) regions.NB.lon1(2)];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% plot ADT
+m_pcolor(ADT.NB.lon,ADT.NB.lat,mean(ADT.NB.adt(:,:,ind.SSH),3).'); shading flat;
+
+hold on
+
+% bathymetry
+m_etopo2('contour',-5000:1000:-2000,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% outline
+m_patch([regions.NB.lon2 regions.NB.lon2(1) regions.NB.lon2(1)],...
+[regions.NB.lat2 fliplr(regions.NB.lat2)],'w');
+
+m_plot(regions.NB.lon2,regions.NB.lat2,'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-49,50.5,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+% colormap
+caxis([-0.7 0.7]); 
+cmocean balance; 
+h = colorbar('FontSize',20); 
+h.FontSize = 18; h.Ticks = -0.7:0.2:0.7;
+ylabel(h,'Mean Absolute Dynamic Topography (m)','FontSize',22);
+
+% adjust position of elements
+p_global = get(gca,'Position');
+h.Position(1) = h.Position(1) + 0.005;
+h.Position(2) = h.Position(2) + 0.08;
+h.Position(3) = h.Position(3) + 0.01;
+h.Position(4) = h.Position(4) - 0.12;
+set(gca,'Position',p_global);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_3c.png','Resolution',300)
+
+close gcf
+
+clear ans
+clear h
+clear p_global
+clear dates
+
+%% (d) Mean Daily Maximum Diving Depth
+
+% compute max depth
+max_depth = META.MaxDepth24h;
+b = cellfun(@num2str,max_depth,'un',0); max_depth(ismember(b,'NA')) = {'NaN'};
+max_depth = cell2mat(cellfun(@str2num,max_depth,'un',0));
+clear b
+
+META.MaxDepth = max_depth;
+clear max_depth
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.NB.lat1; LONLIMS = [regions.NB.lon2(1) regions.NB.lon1(2)];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bin map
+binned.LONedges = -80:1:40;
+binned.LATedges = 20:1:70;
+
+[binned.mz,binned.LONmid,binned.LATmid,~,binned.stdz] = twodstats(META.Longitude,META.Latitude,META.MaxDepth,binned.LONedges,binned.LATedges);
+
+m_pcolor(binned.LONmid,binned.LATmid,binned.mz);
+
+hold on
+
+% bathymetry
+m_etopo2('contour',-5000:1000:-2000,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% outline
+m_patch([regions.NB.lon2 regions.NB.lon2(1) regions.NB.lon2(1)],...
+[regions.NB.lat2 fliplr(regions.NB.lat2)],'w');
+
+m_plot(regions.NB.lon2,regions.NB.lat2,'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-49,50.5,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+% colormap
+h = colorbar('FontSize',20); 
+cmap = colormap('parula'); 
+colormap(flipud(cmap)); 
+ylabel(h,'Mean Daily Maximum Depth (m)','FontSize',22);
+caxis([0 400]);
+
+% adjust position of elements
+p_global = get(gca,'Position');
+h.Position(1) = h.Position(1) + 0.005;
+h.Position(2) = h.Position(2) + 0.08;
+h.Position(3) = h.Position(3) + 0.01;
+h.Position(4) = h.Position(4) - 0.12;
+set(gca,'Position',p_global);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_3d.png','Resolution',300)
+
+close gcf
+
+clear ans
+clear h
+clear p_global
+clear binned

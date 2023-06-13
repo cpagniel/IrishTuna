@@ -67,9 +67,17 @@ run figure_1b
 
 run figure_2
 
-%% Figure 7
+%% Figure 6
 
-run figure_7
+run figure_6
+
+%% Figure 7 and Table 3
+
+run figure_7_and_table_3
+
+%% Table S5 to S12
+
+run table_S5_to_S12
 
 %% Figure 8
 
@@ -79,11 +87,13 @@ run figure_8
 
 run table_3_and_table_S11_to_S21
 
-%% Figure S1 & Table S2
+%% Table S2
 
-run table_S2_and_figure_S1
+run table_S2
 
+%% Figure S1
 
+run figure_S1
 
 
 
