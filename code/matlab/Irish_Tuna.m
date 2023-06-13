@@ -67,13 +67,17 @@ run figure_1b
 
 run figure_2
 
-%% Figure 3
+%% Figure 7
 
-run figure_3
+run figure_7
 
-%% Figure 4
+%% Figure 8
 
-run figure_4
+run figure_8
+
+%% Table 3 and Table S11 to S21
+
+run table_3_and_table_S11_to_S21
 
 %% Figure S1 & Table S2
 
