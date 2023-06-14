@@ -194,17 +194,17 @@ for i = [2 3 4 1 5 0] % each hotspot and outside hotspots
     axis square
     grid on
 
-    if i == 2
+    if i == 1
         rg = 'd';
-    elseif i == 3
+    elseif i == 2
         rg = 'a';
-    elseif i == 4
+    elseif i == 3
         rg = 'b';
-    elseif i == 5
+    elseif i == 4
         rg = 'c';
-    elseif i == 6
+    elseif i == 5
         rg = 'e';
-    elseif i == 1
+    elseif i == 0
         rg = 'f';
     end
 
