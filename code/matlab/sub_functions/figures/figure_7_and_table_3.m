@@ -11,10 +11,6 @@
 % 5 = Mediterranean
 % 0 = Outside
 
-%% Colormap
-
-cmap = [127 201 127; 255 255 153; 190 174 212; 56 108 176; 253 192 134; 128 128 128]./256;
-
 %% Generate histograms.
 
 sub = [];
@@ -78,7 +74,7 @@ for j = 1:2 % % loop through ACE and CE
         figure(1);
 
         histogram(tmp.SpeedRadius./1000,...
-            0:5:200,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
+            0:5:200,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap_r(cnt,:));
         hold on
         axis tight;
         axis square;
@@ -100,7 +96,7 @@ for j = 1:2 % % loop through ACE and CE
         figure(2);
 
         histogram(tmp.Amplitude.*100,...
-            0:2.5:100,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
+            0:2.5:100,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap_r(cnt,:));
         hold on
         axis tight;
         axis square;
@@ -123,7 +119,7 @@ for j = 1:2 % % loop through ACE and CE
         figure(3);
 
         histogram(tmp.SpeedAverage.*100,...
-            0:3.75:150,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
+            0:3.75:150,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap_r(cnt,:));
         hold on
         axis tight;
         axis square;
@@ -145,7 +141,7 @@ for j = 1:2 % % loop through ACE and CE
         figure(4);
 
         histogram(double(tmp.DaysSinceFirstDetection)./7,...
-            0:1.6:64,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap(cnt,:));
+            0:1.6:64,'Normalization','Probability','DisplayStyle','Stairs','LineWidth',2,'EdgeColor',cmap_r(cnt,:));
         hold on
         axis tight;
         axis square;

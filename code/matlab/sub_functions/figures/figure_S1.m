@@ -4,10 +4,8 @@
 
 %% Mean % of Deployment Days
 
-cmap = [127 201 127; 255 255 153; 190 174 212; 56 108 176; 253 192 134; 128 128 128]./256;
-
 b = bar(mean((table2array(tbl_S2(:,2:7))./sum(table2array(tbl_S2(:,2:7)),2))*100),'FaceColor','flat');
-b.CData = cmap;
+b.CData = cmap_r;
 
 hold on
 
@@ -20,10 +18,12 @@ set(gca,"XTickLabelRotation",0);
 ylabel('Mean % of Deployment Days','FontSize',22);
 xlabel('Hotspot','FontSize',22);
 
+grid on
+grid minor
+
 cd([fdir 'figures'])
 exportgraphics(gcf,'figure_S1.png','Resolution',300);
 
 close gcf
 
 clear b
-clear cmap

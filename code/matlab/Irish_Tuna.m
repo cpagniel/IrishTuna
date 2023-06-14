@@ -14,6 +14,9 @@ warning off;
 % Location of Project on Google Drive
 fdir = '/Users/cpagniello/Library/CloudStorage/GoogleDrive-cpagniel@stanford.edu/My Drive/Projects/Completed/IrishTuna/github/IrishTuna/';
 
+% Colormap for Regions
+cmap_r = [127 201 127; 255 255 153; 190 174 212; 56 108 176; 253 192 134; 128 128 128]./256;
+
 %% Load Tag Data
 
 run load_data

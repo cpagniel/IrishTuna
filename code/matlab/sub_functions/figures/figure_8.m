@@ -1,4 +1,4 @@
-%% figure_3abc
+%% figure_8
 % Sub-function of Irish_Tuna.m; plots zoomed in bin map, ADT
 % and EKE in Newfoundland Basin hotspot
 
