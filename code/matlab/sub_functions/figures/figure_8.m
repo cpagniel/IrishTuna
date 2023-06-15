@@ -16,7 +16,7 @@ binned.LATedges = 20:1:70;
 
 [binned.N,binned.LONmid,binned.LATmid] = twodhist(META.Longitude,META.Latitude,binned.LONedges,binned.LATedges);
 
-m_pcolor(binned.LONmid,binned.LATmid,binned.N); shading flat;
+m_pcolor(binned.LONmid-0.25,binned.LATmid-0.25,binned.N); shading flat;
 
 hold on
 
@@ -205,7 +205,7 @@ binned.LATedges = 20:1:70;
 
 [binned.mz,binned.LONmid,binned.LATmid,~,binned.stdz] = twodstats(META.Longitude,META.Latitude,META.MaxDepth,binned.LONedges,binned.LATedges);
 
-m_pcolor(binned.LONmid,binned.LATmid,binned.mz);
+m_pcolor(binned.LONmid-0.25,binned.LATmid-0.25,binned.mz);
 
 hold on
 

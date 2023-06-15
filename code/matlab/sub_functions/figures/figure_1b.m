@@ -17,7 +17,7 @@ binned.LATedges = 20:1:70;
 
 [binned.N,binned.LONmid,binned.LATmid] = twodhist(META.Longitude,META.Latitude,binned.LONedges,binned.LATedges);
 
-m_pcolor(binned.LONmid,binned.LATmid,binned.N);
+m_pcolor(binned.LONmid-0.25,binned.LATmid-0.25,binned.N);
 
 hold on
 

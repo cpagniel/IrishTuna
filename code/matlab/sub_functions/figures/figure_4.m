@@ -1,5 +1,6 @@
 %% figure_4
-% Sub-function of Irish_Tuna.m; time in mesopelagic (> 200 m)
+% Sub-function of Irish_Tuna.m; time in mesopelagic (> 200 m) bar graph,
+% vs. ADT and map.
 
 %% Mean % Time in Mesopelagic for Each Tag
 
@@ -12,7 +13,7 @@ for i = 1:length(toppID)
     end
 end
 
-%% Plot
+%% Figure 4a: Bar graph per hotspot.
 
 figure() 
 
@@ -31,10 +32,13 @@ ylabel('Mean % of Time in Mesopelagic','FontSize',22);
 xlabel('Hotspot','FontSize',22);
 
 grid on
+grid minor
 
 cd([fdir 'figures'])
-exportgraphics(gcf,'figure_4.png','Resolution',300);
+exportgraphics(gcf,'figure_4a.png','Resolution',300);
 
-% close gcf
+close gcf
 
 clear b
+
+%%
