@@ -87,9 +87,9 @@ for j = 1:2 % % loop through ACE and CE
         if i  == 0
             cd([fdir 'figures']);
             if j == 1
-                exportgraphics(gcf,'figure_4a.png','Resolution',300);
+                exportgraphics(gcf,'figure_7a.png','Resolution',300);
             elseif j == 2
-                exportgraphics(gcf,'figure_4e.png','Resolution',300);
+                exportgraphics(gcf,'figure_7e.png','Resolution',300);
             end
         end
 
@@ -110,9 +110,9 @@ for j = 1:2 % % loop through ACE and CE
         if i  == 0
             cd([fdir 'figures']);
             if j == 1
-                exportgraphics(gcf,'figure_4b.png','Resolution',300);
+                exportgraphics(gcf,'figure_7b.png','Resolution',300);
             elseif j == 2
-                exportgraphics(gcf,'figure_4f.png','Resolution',300);
+                exportgraphics(gcf,'figure_7f.png','Resolution',300);
             end
         end
 
@@ -132,9 +132,9 @@ for j = 1:2 % % loop through ACE and CE
         if i  == 0
             cd([fdir 'figures']);
             if j == 1
-                exportgraphics(gcf,'figure_4c.png','Resolution',300);
+                exportgraphics(gcf,'figure_7c.png','Resolution',300);
             elseif j == 2
-                exportgraphics(gcf,'figure_4g.png','Resolution',300);
+                exportgraphics(gcf,'figure_7g.png','Resolution',300);
             end
         end
 
@@ -154,9 +154,9 @@ for j = 1:2 % % loop through ACE and CE
         if i  == 0
             cd([fdir 'figures']);
             if j == 1
-                exportgraphics(gcf,'figure_4d.png','Resolution',300);
+                exportgraphics(gcf,'figure_7d.png','Resolution',300);
             elseif j == 2
-                exportgraphics(gcf,'figure_4h.png','Resolution',300);
+                exportgraphics(gcf,'figure_7h.png','Resolution',300);
             end
         end
     end

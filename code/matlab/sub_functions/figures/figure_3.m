@@ -151,8 +151,7 @@ for i = 1:length(toppID)
     cnt = 0;
     for j = [2 3 4 1 5 0]
         cnt = cnt + 1;
-        tad.stats.mean_per_tag(i,cnt,:) = mean(table2array(TAD(TAD.toppID == toppID(i) & TAD.Region == j, 3:14)).*100,'omitnan');
-        tad.stats.std_per_tag(i,cnt,:) = std(table2array(TAD(TAD.toppID == toppID(i) & TAD.Region == j, 3:14)).*100,'omitnan');
+        tad.stats.mean_per_tag(i,cnt,:) = mean(roundn(table2array(TAD(TAD.toppID == toppID(i) & TAD.Region == j, 3:14)).*100,-1),'omitnan');
     end
 end
 clear i
@@ -168,23 +167,23 @@ for i = [2 3 4 1 5 0] % each hotspot and outside hotspots
 
     cnt = cnt + 1;
 
-    tad.stats.mean_of_all_tags(cnt,:) = mean(tad.stats.mean_per_tag(:,cnt,:),'omitnan');
-    tad.stats.std_of_all_tags(cnt,:) = std(tad.stats.mean_per_tag(:,cnt,:),'omitnan');
+    tad.stats.median_of_all_tags(cnt,:) = median(tad.stats.mean_per_tag(:,cnt,:),'omitnan');
+    tad.stats.mad_of_all_tags(cnt,:) = mad(tad.stats.mean_per_tag(:,cnt,:),1);
 
-    b = barh(tad.stats.mean_of_all_tags(cnt,:));
+    b = barh(tad.stats.median_of_all_tags(cnt,:));
     b.EdgeColor = 'k';
     b.FaceColor = cmap_r(cnt,:);
     b.LineWidth = 1;
 
     hold on
 
-    er = errorbar(tad.stats.mean_of_all_tags(cnt,:),1:1:12,[],tad.stats.std_of_all_tags(cnt,:),'horizontal');
+    er = errorbar(tad.stats.median_of_all_tags(cnt,:),1:1:12,[],tad.stats.mad_of_all_tags(cnt,:),'horizontal');
     er.Color = [0 0 0];
     er.LineStyle = 'none';
     er.LineWidth = 1;
 
     set(gca,'ydir','reverse','FontSize',16,'linewidth',2,'tickdir','out');
-    xlabel('Mean % Time at Depth','FontSize',20); ylabel('Depth (m)','FontSize',20);
+    xlabel('Median % Time at Depth','FontSize',20); ylabel('Depth (m)','FontSize',20);
     xlim([0 60]); set(gca,'XTick',0:5:60);
     set(gca,'XTickLabel',{'0','','10','','20','','30','','40','','50','','60'});
     set(gca,'XTickLabelRotation',0);
@@ -219,3 +218,20 @@ clear cnt
 clear b
 clear er
 clear rg
+
+%% Mean % Time in Top 50 m per Hotspot
+
+for i = 1:length(toppID)
+    cnt = 0;
+    for j = [2 3 4 1 5 0] % each hotspot and outside hotspots
+        cnt = cnt + 1;
+        tad.surf.mean_per_tag(i,cnt) = mean(sum(roundn(table2array(TAD(TAD.toppID == toppID(i) & TAD.Region == j,3:5))*100,-1),2),'omitnan');
+    end
+end
+clear i
+clear j
+clear cnt
+
+tad.surf.median_per_hotspot = median(tad.surf.mean_per_tag,'omitnan');
+tad.surf.mad_per_hotspot = mad(tad.surf.mean_per_tag,1);
+

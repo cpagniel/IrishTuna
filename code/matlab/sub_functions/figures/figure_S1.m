@@ -2,6 +2,10 @@
 % Sub-function of Irish_Tuna.m; calculate residency of each tag in each
 % region
 
+%% Run Table S2
+
+run table_S2
+
 %% Mean % of Deployment Days
 
 b = bar(mean((table2array(tbl_S2(:,2:7))./sum(table2array(tbl_S2(:,2:7)),2))*100),'FaceColor','flat');

@@ -1,4 +1,4 @@
-%% figure_3.m
+%% figure_S2.m
 % Sub-function of Irish_Tuna.m; plot time at temperature
 
 %% Define temperature bins.
@@ -152,7 +152,6 @@ for i = 1:length(toppID)
     for j = [2 3 4 1 5 0]
         cnt = cnt + 1;
         tat.stats.mean_per_tag(i,cnt,:) = mean(table2array(TAT(TAT.toppID == toppID(i) & TAT.Region == j, 3:14)).*100,'omitnan');
-        tat.stats.std_per_tag(i,cnt,:) = std(table2array(TAT(TAT.toppID == toppID(i) & TAT.Region == j, 3:14)).*100,'omitnan');
     end
 end
 clear i
@@ -168,23 +167,23 @@ for i = [2 3 4 1 5 0] % each hotspot and outside hotspots
 
     cnt = cnt + 1;
 
-    tat.stats.mean_of_all_tags(cnt,:) = mean(tat.stats.mean_per_tag(:,cnt,:),'omitnan');
-    tat.stats.std_of_all_tags(cnt,:) = std(tat.stats.mean_per_tag(:,cnt,:),'omitnan');
+    tat.stats.median_of_all_tags(cnt,:) = median(tat.stats.mean_per_tag(:,cnt,:),'omitnan');
+    tat.stats.mad_of_all_tags(cnt,:) = mad(tat.stats.mean_per_tag(:,cnt,:),1);
 
-    b = barh(tat.stats.mean_of_all_tags(cnt,:));
+    b = barh(tat.stats.median_of_all_tags(cnt,:));
     b.EdgeColor = 'k';
     b.FaceColor = cmap_r(cnt,:);
     b.LineWidth = 1;
 
     hold on
 
-    er = errorbar(tat.stats.mean_of_all_tags(cnt,:),1:1:12,[],tat.stats.std_of_all_tags(cnt,:),'horizontal');
+    er = errorbar(tat.stats.median_of_all_tags(cnt,:),1:1:12,[],tat.stats.mad_of_all_tags(cnt,:),'horizontal');
     er.Color = [0 0 0];
     er.LineStyle = 'none';
     er.LineWidth = 1;
 
     set(gca,'ydir','normal','FontSize',16,'linewidth',2,'tickdir','out');
-    xlabel('Mean % Time at Temperature','FontSize',20); ylabel('Temperature (^oC)','FontSize',20);
+    xlabel('Median % Time at Temperature','FontSize',20); ylabel('Temperature (^oC)','FontSize',20);
     xlim([0 80]); set(gca,'XTick',0:5:80);
     set(gca,'XTickLabel',{'0','','10','','20','','30','','40','','50','','60','','70','','80'});
     set(gca,'XTickLabelRotation',0);

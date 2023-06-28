@@ -15,6 +15,7 @@ warning off;
 fdir = '/Users/cpagniello/Library/CloudStorage/GoogleDrive-cpagniel@stanford.edu/My Drive/Projects/Completed/IrishTuna/github/IrishTuna/';
 
 % Colormap for Regions
+% CI, BoB, WEB, NB, Med, Outside
 cmap_r = [127 201 127; 255 255 153; 190 174 212; 56 108 176; 253 192 134; 128 128 128]./256;
 
 %% Load Tag Data
@@ -54,10 +55,6 @@ CC.Region(inpolygon(CC.SSHMaxLongitude,CC.SSHMaxLatitude,regions.Med.bndry(1,:),
 
 clear dd
 
-%% Stats
-
-run table_S2
-
 %% Figure 1a
 
 run figure_1a
@@ -69,6 +66,14 @@ run figure_1b
 %% Figure 2
 
 run figure_2
+
+%% Figure 3
+
+run figure_3
+
+%% Figure 4
+
+run figure_4
 
 %% Figure 6
 

@@ -2,26 +2,52 @@
 % Sub-function of Irish_Tuna.m; compute p-values for Wilcoxon Rank Sum Test
 % to evaluate difference in eddy statistics.
 
-%% Wilcoxon Rank Sum Test
-% H0: Data in X and Y are samples from continous distributions with equal
-% medians.
-% HA: Data in X and Y are smaples from continous distributions whose
-% medians are not equal.
+%% Combine sub tables from each hotspot into single table.
 
+tmp.AC = table();
+tmp.CC = table();
 for i = 1:6
-    for j = 1:6
-        [eddies.stats.AC.p.Ls(i,j),eddies.stats.AC.h.Ls(i,j),eddies.stats.AC.tstat.Ls(i,j)] = ranksum(sub.AC{i}.SpeedRadius/1000,sub.AC{j}.SpeedRadius/1000);
-        [eddies.stats.AC.p.A(i,j),eddies.stats.AC.h.A(i,j),eddies.stats.AC.tstat.A(i,j)] = ranksum(sub.AC{i}.Amplitude*100,sub.AC{j}.Amplitude*100);
-        [eddies.stats.AC.p.Uavg(i,j),eddies.stats.AC.h.Uavg(i,j),eddies.stats.AC.tstat.Uavg(i,j)] = ranksum(sub.AC{i}.SpeedAverage*100,sub.AC{j}.SpeedAverage*100);
-        [eddies.stats.AC.p.Life(i,j),eddies.stats.AC.h.Life(i,j),eddies.stats.AC.tstat.Life(i,j)] = ranksum(double(sub.AC{i}.DaysSinceFirstDetection)/7,double(sub.AC{j}.DaysSinceFirstDetection)/7);
-
-        [eddies.stats.CC.p.Ls(i,j),eddies.stats.CC.h.Ls(i,j),eddies.stats.CC.tstat.Ls(i,j)] = ranksum(sub.CC{i}.SpeedRadius/1000,sub.CC{j}.SpeedRadius/1000);
-        [eddies.stats.CC.p.A(i,j),eddies.stats.CC.h.A(i,j),eddies.stats.CC.tstat.A(i,j)] = ranksum(sub.CC{i}.Amplitude*100,sub.CC{j}.Amplitude*100);
-        [eddies.stats.CC.p.Uavg(i,j),eddies.stats.CC.h.Uavg(i,j),eddies.stats.CC.tstat.Uavg(i,j)] = ranksum(sub.CC{i}.SpeedAverage*100,sub.CC{j}.SpeedAverage*100);
-        [eddies.stats.CC.p.Life(i,j),eddies.stats.CC.h.Life(i,j),eddies.stats.CC.tstat.Life(i,j)] = ranksum(double(sub.CC{i}.DaysSinceFirstDetection)/7,double(sub.CC{j}.DaysSinceFirstDetection)/7);
-
-    end
+    tmp.AC = [tmp.AC; sub.AC{i}];
+    tmp.CC = [tmp.CC; sub.CC{i}];
 end
-clear i
-clear j
-clear sub
+
+%% Kruskal-Wallis Test
+
+% ACE
+[~,~,stats] = kruskalwallis(tmp.AC.SpeedRadius/1000,tmp.AC.Region);
+figure; c = multcompare(stats);
+eddies.stats.AC.p.Ls = c(:,[1:2 6]);
+
+[~,~,stats] = kruskalwallis(tmp.AC.Amplitude*100,tmp.AC.Region);
+figure; c = multcompare(stats);
+eddies.stats.AC.p.A = c(:,[1:2 6]);
+
+[~,~,stats] = kruskalwallis(tmp.AC.SpeedAverage*100,tmp.AC.Region);
+figure; c = multcompare(stats);
+eddies.stats.AC.p.Uavg = c(:,[1:2 6]);
+
+[~,~,stats] = kruskalwallis(double(tmp.AC.DaysSinceFirstDetection)/7,tmp.AC.Region);
+figure; c = multcompare(stats);
+eddies.stats.AC.p.Life = c(:,[1:2 6]);
+
+% CE
+[~,~,stats] = kruskalwallis(tmp.CC.SpeedRadius/1000,tmp.CC.Region);
+figure; c = multcompare(stats);
+eddies.stats.CC.p.Ls = c(:,[1:2 6]);
+
+[~,~,stats] = kruskalwallis(tmp.CC.Amplitude*100,tmp.CC.Region);
+figure; c = multcompare(stats);
+eddies.stats.CC.p.A = c(:,[1:2 6]);
+
+[~,~,stats] = kruskalwallis(tmp.CC.SpeedAverage*100,tmp.CC.Region);
+figure; c = multcompare(stats);
+eddies.stats.CC.p.Uavg = c(:,[1:2 6]);
+
+[~,~,stats] = kruskalwallis(double(tmp.CC.DaysSinceFirstDetection)/7,tmp.CC.Region);
+figure; c = multcompare(stats);
+eddies.stats.CC.p.Life = c(:,[1:2 6]);
+
+clear c
+clear stats
+
+close all
