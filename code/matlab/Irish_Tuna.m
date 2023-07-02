@@ -55,12 +55,9 @@ CC.Region(inpolygon(CC.SSHMaxLongitude,CC.SSHMaxLatitude,regions.Med.bndry(1,:),
 
 clear dd
 
-%% Figure 1a
+%% Figure 1
 
 run figure_1a
-
-%% Figure 1b
-
 run figure_1b
 
 %% Figure 2
@@ -71,29 +68,37 @@ run figure_2
 
 run figure_3
 
-%% Figure 4
+%% Figure 4 and Tables 2, S3 & S4
 
-run figure_4
+run figure_4_and_tables_2_S3_S4
+
+%% Figure 5 and Tables 2, S5 & S6
+
+run figure_5_and_tables_2_S5_S6
 
 %% Figure 6
 
 run figure_6
 
-%% Figure 7 and Table 3
+%% Figure 7 and Table 4
 
-run figure_7_and_table_3
+run figure_7_and_table_4
 
-%% Table S5 to S12
+%% Table S9 to S16
 
-run table_S5_to_S12
+run table_S9_to_S16
 
 %% Figure 8
 
 run figure_8
 
-%% Table 3 and Table S11 to S21
+%% Figure 9
 
-run table_3_and_table_S11_to_S21
+run figure_9
+
+%% Table 3 and Table S7 and S8
+
+run table_3_and_table_S7_to_S8
 
 %% Table S2
 
@@ -102,31 +107,6 @@ run table_S2
 %% Figure S1
 
 run figure_S1
-
-
-
-
-%% OLD CODE
-
-%% Figure 6
-
-run figure_6
-
-%% Figure 7
-
-run figure_7
-
-%% Figure 8
-
-run figure_8
-
-%% Figure 9 to 13 
-
-run figure_9
-run figure_10
-run figure_11
-run figure_12
-run figure_13
 
 %% Figure S2
 

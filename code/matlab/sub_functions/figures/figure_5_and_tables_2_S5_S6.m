@@ -1,71 +1,93 @@
-%% figure_4
-% Sub-function of Irish_Tuna.m; time in mesopelagic (> 200 m) bar graph,
+%% figure_5_and_tables_2_S5_S6.m
+% Sub-function of Irish_Tuna.m; max daily diving depth bar graph,
 % vs. ADT and map.
 
-%% Mean % Time in Mesopelagic for Each Tag
+%% Max Daily Diving Depth
+
+% compute max depth
+max_depth = META.MaxDepth24h;
+b = cellfun(@num2str,max_depth,'un',0); max_depth(ismember(b,'NA')) = {'NaN'};
+max_depth = cell2mat(cellfun(@str2num,max_depth,'un',0));
+clear b
+
+META.MaxDepth = max_depth;
+
+META = removevars(META, 'MaxDepth24h');
+clear max_depth
+
+%% Mean Max Daily Diving Depth for Each Tag
 
 for i = 1:length(toppID)
     cnt = 0;
     for j = [2 3 4 1 5 0] % each hotspot and outside hotspots
         cnt = cnt + 1;
-        meso.stats.mean_per_tag(i,cnt) = mean(sum(roundn(table2array(TAD(TAD.toppID == toppID(i) & TAD.Region == j,9:14))*100,-1),2),'omitnan');
+        max_d.stats.mean_per_tag(i,cnt) = mean(META.MaxDepth(META.TOPPid == toppID(i) & META.Region == j & isfinite(META.MaxDepth)),'omitnan');
     end
 end
 clear i
 clear j
 clear cnt
 
-%% Median % Time in Mesopelagic per Hotspot
+%% Median Daily Max Diving Depth per Hotspot
 
-meso.stats.median_per_hotspot = median(meso.stats.mean_per_tag,'omitnan');
-meso.stats.mad_per_hotspot = mad(meso.stats.mean_per_tag,1);
+max_d.stats.median_per_hotspot = median(max_d.stats.mean_per_tag,'omitnan');
+max_d.stats.mad_per_hotspot = mad(max_d.stats.mean_per_tag,1);
+
+%% Max Daily Max Diving Depth in Each Hotsopot
+
+cnt = 0;
+for j = [2 3 4 1 5 0] % each hotspot and outside hotspots
+    cnt = cnt + 1;
+    max_d.stats.max(cnt) = max(META.MaxDepth(META.Region == j & isfinite(META.MaxDepth)));
+end
+clear j
+clear cnt
 
 %% Kruskal-Wallis Test
 
-[~,~,stats] = kruskalwallis(meso.stats.mean_per_tag);
+[~,~,stats] = kruskalwallis(max_d.stats.mean_per_tag);
 c = multcompare(stats);
 
-meso.stats.p = c(:,[1:2 6]);
+max_d.stats.p = c(:,[1:2 6]);
 
 clear c
 clear stats
 
 close all
 
-%% Figure 4a: Bar graph per hotspot.
+%% Figure 5a: Bar graph per hotspot.
 
 figure()
 
-b = bar(meso.stats.median_per_hotspot,'FaceColor','flat');
+b = bar(max_d.stats.median_per_hotspot,'FaceColor','flat');
 b.CData = cmap_r;
 
 hold on
 
-errorbar(1:6,meso.stats.median_per_hotspot,[],meso.stats.mad_per_hotspot,'LineStyle','none','Color','k');
+errorbar(1:6,max_d.stats.median_per_hotspot,[],max_d.stats.mad_per_hotspot,'LineStyle','none','Color','k');
 
 set(gca,'FontSize',20);
 set(gca,'XTickLabel',{'CI','BoB','WEB','NB','Med','Outside'})
 set(gca,"XTickLabelRotation",0);
 
-ylabel('Median % of Time in Mesopelagic','FontSize',22);
+ylabel('Median Daily Maximum Depth (m)','FontSize',22);
 xlabel('Hotspot','FontSize',22);
 
 grid on
 grid minor
 
 cd([fdir 'figures'])
-exportgraphics(gcf,'figure_4a.png','Resolution',300);
+exportgraphics(gcf,'figure_5a.png','Resolution',300);
 
 close gcf
 
 clear b
 
-%% Bin ADT, EKE and Median Percent Time in Mesopelagic 
+%% Bin ADT, EKE and Daily Maximum Diving Depth
 
-% Load ADT and EKE data.
+% Load ADT data.
 cd([fdir 'data/SSH/NAO']);
 files = dir('NAO*');
-
 ADT.NAO.adt = [];
 ADT.NAO.ugosa = [];
 ADT.NAO.vgosa = [];
@@ -98,9 +120,9 @@ end
 clear i
 clear files
 
-% Only keep ADT data on days with a TAD
-dates.TAD = unique(TAD.DateTime);
-ind = ismember(ADT.NAO.time,dates.TAD);
+% Only keep ADT data on days with a Daily Maximum Diving Depth
+dates.max_d = unique(META.Date(isfinite(META.MaxDepth)));
+ind = ismember(ADT.NAO.time,dates.max_d);
 ADT.NAO.adt = ADT.NAO.adt(:,:,ind);
 ADT.NAO.ugosa = ADT.NAO.ugosa(:,:,ind);
 ADT.NAO.vgosa = ADT.NAO.vgosa(:,:,ind);
@@ -108,11 +130,12 @@ ADT.NAO.time = ADT.NAO.time(ind);
 
 clear ind
 
-% Median time in mesopelagic in 1 x 1 deg bins.
+% Median daily maximum diving depth in 1 x 1 deg bins.
 binned.LONedges = -80:1:40;
 binned.LATedges = 20:1:70;
 
-[binned.meso.mz,binned.LONmid,binned.LATmid] = twodmed(TAD.Longitude,TAD.Latitude,sum(table2array(TAD(:,9:14)),2).*100,binned.LONedges,binned.LATedges);
+[binned.max_d.mz,binned.LONmid,binned.LATmid] = twodmed(META.Longitude(isfinite(META.MaxDepth)),...
+    META.Latitude(isfinite(META.MaxDepth)),META.MaxDepth(isfinite(META.MaxDepth)),binned.LONedges,binned.LATedges);
 
 % Median ADT in 1 x 1 deg bins
 ADT.NAO.median_adt = median(ADT.NAO.adt,3,'omitnan'); % median ADT over all time when ABT are present
@@ -132,38 +155,39 @@ tmp.eke = ADT.NAO.median_EKE.';
 clear tmp
 
 % Determine Region of Observation
-meso.meso = binned.meso.mz(:);
-meso.adt = binned.adt.mz(:);
-meso.eke = binned.eke.mz(:);
+max_d.max_d = binned.max_d.mz(:);
+max_d.adt = binned.adt.mz(:);
+max_d.eke = binned.eke.mz(:);
 
-[meso.lon,meso.lat] = meshgrid(binned.LONmid,binned.LATmid);
-meso.lon = meso.lon(:); meso.lat = meso.lat(:);
+[max_d.lon,max_d.lat] = meshgrid(binned.LONmid,binned.LATmid);
+max_d.lon = max_d.lon(:); max_d.lat = max_d.lat(:);
 
-meso.adt = meso.adt(~isnan(meso.meso));
-meso.eke = meso.eke(~isnan(meso.meso));
-meso.lon = meso.lon(~isnan(meso.meso));
-meso.lat = meso.lat(~isnan(meso.meso));
-meso.meso = meso.meso(~isnan(meso.meso));
+max_d.adt = max_d.adt(~isnan(max_d.max_d));
+max_d.eke = max_d.eke(~isnan(max_d.max_d));
+max_d.lon = max_d.lon(~isnan(max_d.max_d));
+max_d.lat = max_d.lat(~isnan(max_d.max_d));
+max_d.max_d = max_d.max_d(~isnan(max_d.max_d));
 
-meso.region = zeros(length(meso.lat),1);
-meso.region(inpolygon(meso.lon,meso.lat,regions.NB.bndry(1,:),regions.NB.bndry(2,:))) = 1;
-meso.region(inpolygon(meso.lon,meso.lat,regions.CI.bndry(1,:),regions.CI.bndry(2,:))) = 2;
-meso.region(inpolygon(meso.lon,meso.lat,regions.Biscay.bndry(1,:),regions.Biscay.bndry(2,:))) = 3;
-meso.region(inpolygon(meso.lon,meso.lat,regions.WEB.bndry(1,:),regions.WEB.bndry(2,:))) = 4;
-meso.region(inpolygon(meso.lon,meso.lat,regions.Med.bndry(1,:),regions.Med.bndry(2,:))) = 5;
+max_d.region = zeros(length(max_d.lat),1);
+max_d.region(inpolygon(max_d.lon,max_d.lat,regions.NB.bndry(1,:),regions.NB.bndry(2,:))) = 1;
+max_d.region(inpolygon(max_d.lon,max_d.lat,regions.CI.bndry(1,:),regions.CI.bndry(2,:))) = 2;
+max_d.region(inpolygon(max_d.lon,max_d.lat,regions.Biscay.bndry(1,:),regions.Biscay.bndry(2,:))) = 3;
+max_d.region(inpolygon(max_d.lon,max_d.lat,regions.WEB.bndry(1,:),regions.WEB.bndry(2,:))) = 4;
+max_d.region(inpolygon(max_d.lon,max_d.lat,regions.Med.bndry(1,:),regions.Med.bndry(2,:))) = 5;
 
-%% Figure 4b: median ADT vs. median percent time in mesopelagic
+%% Figure 5b: median ADT vs. median daily maximum diving depth
 
+% Plot ADT vs. % Daily Max Depth
 figure()
-h(6) = scatter(meso.adt(meso.region == 0),meso.meso(meso.region == 0),30,cmap_r(6,:),'filled');
+h(6) = scatter(max_d.adt(max_d.region == 0),max_d.max_d(max_d.region == 0),30,cmap_r(6,:),'filled');
 hold on
 cnt = 0;
 for i = [2 3 4 1 5]
     cnt = cnt + 1;
-    h(cnt) = scatter(meso.adt(meso.region == i),meso.meso(meso.region == i),30,cmap_r(cnt,:),'filled');
+    h(cnt) = scatter(max_d.adt(max_d.region == i),max_d.max_d(max_d.region == i),30,cmap_r(cnt,:),'filled');
     hold on
 end
-scatter(meso.adt(meso.region == 3),meso.meso(meso.region == 3),30,cmap_r(2,:),'filled')
+scatter(max_d.adt(max_d.region == 3),max_d.max_d(max_d.region == 3),30,cmap_r(2,:),'filled')
 clear i
 clear cnt
 
@@ -174,7 +198,7 @@ grid on
 grid minor
 
 xlabel('Median Absolute Dynamic Topography (m)','FontSize',20);
-ylabel('Median % Time in Mesopelagic','FontSize',20);
+ylabel('Median Daily Maximum Depth (m)','FontSize',20);
 
 xlim([-1 1]);
 axis square
@@ -182,7 +206,7 @@ axis square
 legend(h,{'CI','BoB','WEB','NB','Med','Outside'},'Location','northwest','NumColumns',1)
 
 cd([fdir 'figures'])
-exportgraphics(gcf,'figure_4b.png','Resolution',300);
+exportgraphics(gcf,'figure_5b.png','Resolution',300);
 
 close gcf
 
@@ -193,14 +217,14 @@ clear h
 cnt = 0;
 for i = [2 3 4 1 5 0]
     cnt = cnt + 1;
-    [meso.stats.pearson.rho(cnt),meso.stats.pearson.p(cnt)] = corr(meso.adt(meso.region == i),meso.meso(meso.region == i),"type","Spearman");
+    [max_d.stats.pearson.rho(cnt),max_d.stats.pearson.p(cnt)] = corr(max_d.adt(max_d.region == i),max_d.max_d(max_d.region == i),"type","Spearman");
 end
 clear i
 
-[meso.stats.pearson.rho(cnt+1),meso.stats.pearson.p(cnt+1)] = corr(meso.adt,meso.meso,"type","Spearman");
+[max_d.stats.pearson.rho(cnt+1),max_d.stats.pearson.p(cnt+1)] = corr(max_d.adt,max_d.max_d,"type","Spearman");
 clear cnt
 
-%% Figure 4c: Map of percent time in mesopelagic
+%% Figure 5c: Map of daily maximum diving depth
 
 % Create figure and axes for bathymetry.
 figure('Position',[476 334 716 532]);
@@ -210,7 +234,7 @@ LATLIMS = [20 70]; LONLIMS = [-80 40];
 m_proj('miller','lon',LONLIMS,'lat',LATLIMS);
 
 % Bin SSM Positions
-m_pcolor(binned.LONmid-0.25,binned.LATmid-0.25,binned.meso.mz);
+m_pcolor(binned.LONmid-0.25,binned.LATmid-0.25,binned.max_d.mz);
 
 hold on
 
@@ -240,24 +264,22 @@ m_ruler([.78 .98],.1,2,'fontsize',16,'ticklength',0.01);
 p = get(gca,'Position');
 
 h = colorbar('FontSize',16);
-cmap = getPyPlot_cMap('gnuplot2_r',11);
-colormap(cmap(2:end,:));
-y = ylabel(h,'Median % Time in Mesopelagic','FontSize',16);
-caxis([0 10]);
-h.Ticks = 0:5:10;
+cmap = getPyPlot_cMap('gnuplot2_r');
+colormap(cmap(5:end-3,:));
+ylabel(h,'Median Daily Maximum Depth (m)','FontSize',16);
+caxis([0 400]);
 
+p(1) = p(1) - 0.03;
 set(gca,'Position',p);
-y.Position(1) = y.Position(1) - 0.2;
 
 clear p
 
 % Save
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_4c.png','Resolution',300)
+exportgraphics(gcf,'figure_5c.png','Resolution',300)
 
 %%Clear
 clear h*
-clear y
 clear ans
 
 close gcf

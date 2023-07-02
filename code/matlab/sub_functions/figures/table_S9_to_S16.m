@@ -1,4 +1,4 @@
-%% table_S5_to_S12.m
+%% table_S9_to_S16.m
 % Sub-function of Irish_Tuna.m; compute p-values for Wilcoxon Rank Sum Test
 % to evaluate difference in eddy statistics.
 

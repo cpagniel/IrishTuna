@@ -1,4 +1,4 @@
-%% figure_7_and_table_3.m
+%% figure_7_and_table_4.m
 % Sub-function of Irish_Tuna.m; plots eddy histograms with each region and
 % compute eddy statistics.
 

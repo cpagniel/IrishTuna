@@ -122,7 +122,6 @@ close gcf
 clear ans
 clear h
 clear p_global
-clear dates
 
 %% (b) EKE
 
