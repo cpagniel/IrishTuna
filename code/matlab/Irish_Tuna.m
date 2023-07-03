@@ -1,10 +1,10 @@
-%% Irish Tuna Project
+%% Irish Tuna
 % The following runs code to process, analyze and plot data related to 
 % tag deployments on tuna from Ireland.
 %
 % Author: Camille Pagniello, Stanford University (cpagniel@stanford.edu)
 % 
-% Last Update: 10/27/2022
+% Last Update: 07/02/2023
 %
 %% Requirements
 % Also requires m_map toolbox: https://www.eoas.ubc.ca/~rich/map.html
@@ -111,3 +111,11 @@ run figure_S1
 %% Figure S2
 
 run figure_S2
+
+%% Figure S4 to S6
+
+run figure_S4_to_S6
+
+%% Figure S7 to S11
+
+run figure_S7_to_S11
