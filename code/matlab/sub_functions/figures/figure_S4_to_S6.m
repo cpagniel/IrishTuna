@@ -10,9 +10,9 @@
 
 cd([fdir 'data/archival']);
 
-filename = '5120057_L330-2973_clean.csv';
-% '5116034_14P0031_clean.csv';
-% '5116043_16P1265_clean.csv';
+% filename = '5116034_14P0031_clean.csv';
+filename = '5116043_16P1265_clean.csv';
+% filename = '5120057_L330-2973_clean.csv';
 
 %% Load PAT data.
 
@@ -71,26 +71,20 @@ PAT.Season(month(PAT.Time) == 9 | month(PAT.Time) == 10 | month(PAT.Time) == 11)
 
 %% Plot
 
-figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
+figure('units','normalized','outerposition',[0 0 1.0000 0.9],'Visible','on');
 
 scatter(PAT.Time,PAT.Depth,4,PAT.Temperature,'filled');
 
-set(gca,'ydir','reverse','FontSize',22,'LineWidth',2);
+set(gca,'ydir','reverse','FontSize',42,'LineWidth',4);
 
-xlabel('Date','FontSize',26); ylabel('Depth (m)','FontSize',26);
+xlabel('Date','FontSize',46); ylabel('Depth (m)','FontSize',46);
 
 cmocean thermal
-h = colorbar; ylabel(h,'Temperature (^oC)','FontSize',26);
-caxis([7 27]); h.Ticks = 7:2:27;
+h = colorbar; ylabel(h,'Temperature (^oC)','FontSize',46);
+caxis([7 27]); h.Ticks = 7:4:27;
 
-% adjust position of elements
-p_global = get(gca,'Position');
-h.Position(1) = h.Position(1) - 0.01;
-h.Position(2) = h.Position(2) + 0.05;
-h.Position(3) = h.Position(3) + 0.01;
-h.Position(4) = h.Position(4) - 0.12;
-set(gca,'Position',p_global);
-clear p_global
+set(gca,'Position',[0.1262 0.1438 0.7524 0.7912]);
+set(h,'Position',[0.8889 0.1922 0.0206 0.6626])
 
 xlim([datetime(year(PAT.Time(1)),8,1) datetime(year(PAT.Time(end)),9,1)])
 ylim([-50 1000]);
@@ -106,21 +100,27 @@ for i = 1:length(ind)-1
 end
 clear i ind
 
-if str2double(filename(1:7)) == 5120043
+if str2double(filename(1:7)) == 5116043
     legend(m([1 11 2 4 8 3]),'Coastal Ireland','Bay of Biscay',...
         'West European Basin','Newfoundland Basin','Mediterranean Sea','Outside',...
-        'Location','Best','NumColumns',2);
+        'Location','Best','NumColumns',1);
 end
 clear m
 
 cd([fdir 'figures']);
-if str2double(filename(1:7)) == 5120057
-    exportgraphics(gcf,'figure_S6a.png','Resolution',300);
-end
+exportgraphics(gcf,'figure_S4_to_S6_legend.png','Resolution',300)
+% if str2double(filename(1:7)) == 5116034
+%     exportgraphics(gcf,'figure_S4a.png','Resolution',300);
+% elseif str2double(filename(1:7)) == 5116043
+%     exportgraphics(gcf,'figure_S5a.png','Resolution',300);
+% elseif str2double(filename(1:7)) == 5120057
+%     exportgraphics(gcf,'figure_S6a.png','Resolution',300);
+% end
 
 clear cmap
+clear xlab
 
-close gcf
+% close gcf
 
 %% Plot Track
 
@@ -184,7 +184,11 @@ m_northarrow(-75,65,4,'type',2,'linewi',2);
 m_ruler([.78 .98],.1,2,'fontsize',16,'ticklength',0.01);
 
 cd([fdir 'figures']);
-if str2double(filename(1:7)) == 5120057
+if str2double(filename(1:7)) == 5116034
+    exportgraphics(gcf,'figure_S4b.png','Resolution',300);
+elseif str2double(filename(1:7)) == 5116043
+    exportgraphics(gcf,'figure_S5b.png','Resolution',300);
+elseif str2double(filename(1:7)) == 5120057
     exportgraphics(gcf,'figure_S6b.png','Resolution',300);
 end
 
@@ -192,6 +196,7 @@ clear ax* c* h* m MM *LIMS
 clear *_date
 clear ans
 
+clear PAT
 clear filename
 
 close all

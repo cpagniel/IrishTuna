@@ -112,6 +112,10 @@ run figure_S1
 
 run figure_S2
 
+%% Figure S3
+
+run figure_S3
+
 %% Figure S4 to S6
 
 run figure_S4_to_S6
