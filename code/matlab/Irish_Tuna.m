@@ -57,8 +57,7 @@ clear dd
 
 %% Figure 1
 
-run figure_1a
-run figure_1b
+run figure_1
 
 %% Figure 2
 
@@ -80,21 +79,25 @@ run figure_5_and_tables_2_S5_S6
 
 run figure_6
 
-%% Figure 7 and Table 4
+%% Figure 7 and 8
 
-run figure_7_and_table_4
+run figure_7_and_8
+
+%% Figure 9 and Table 4
+
+run figure_9_and_table_4
 
 %% Table S9 to S16
 
 run table_S9_to_S16
 
-%% Figure 8
+%% Figure 10
 
-run figure_8
+run figure_10
 
-%% Figure 9
+%% Figure 11
 
-run figure_9
+run figure_11
 
 %% Table 3 and Table S7 and S8
 
@@ -116,10 +119,6 @@ run figure_S2
 
 run figure_S3
 
-%% Figure S4 to S6
+%% Figure S4
 
-run figure_S4_to_S6
-
-%% Figure S7 to S11
-
-run figure_S7_to_S11
+run figure_S4
