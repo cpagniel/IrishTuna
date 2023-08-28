@@ -1,4 +1,4 @@
-%% figure_S3
+%% figure_S4
 % Sub-function of Irish_Tuna.m; plot centers of ACEs & CEs in each hotspot.
 
 %% Newfounland Basin
@@ -47,7 +47,7 @@ m_northarrow(-49,50.5,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3a.png','Resolution',300)
+exportgraphics(gcf,'figure_S4a.png','Resolution',300)
 
 close gcf
 
@@ -89,7 +89,7 @@ m_northarrow(-49,50.5,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3b.png','Resolution',300)
+exportgraphics(gcf,'figure_S4b.png','Resolution',300)
 
 close gcf
 
@@ -140,7 +140,7 @@ m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3c.png','Resolution',300)
+exportgraphics(gcf,'figure_S4c.png','Resolution',300)
 
 close gcf
 
@@ -182,7 +182,7 @@ m_northarrow(-15,58.75,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3d.png','Resolution',300)
+exportgraphics(gcf,'figure_S4d.png','Resolution',300)
 
 close gcf
 
@@ -238,7 +238,7 @@ m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3e.png','Resolution',300)
+exportgraphics(gcf,'figure_S4e.png','Resolution',300)
 
 close gcf
 
@@ -285,7 +285,7 @@ m_northarrow(-15,58.75,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3f.png','Resolution',300)
+exportgraphics(gcf,'figure_S4f.png','Resolution',300)
 
 close gcf
 
@@ -335,7 +335,7 @@ m_northarrow(-15,58.75,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3g.png','Resolution',300)
+exportgraphics(gcf,'figure_S4g.png','Resolution',300)
 
 close gcf
 
@@ -377,7 +377,7 @@ m_northarrow(-15,58.75,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3h.png','Resolution',300)
+exportgraphics(gcf,'figure_S4h.png','Resolution',300)
 
 close gcf
 
@@ -432,7 +432,7 @@ m_northarrow(-15,58.75,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3i.png','Resolution',300)
+exportgraphics(gcf,'figure_S4i.png','Resolution',300)
 
 close gcf
 
@@ -479,7 +479,7 @@ m_northarrow(-15,58.75,1,'type',2,'linewi',2);
 m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_S3j.png','Resolution',300)
+exportgraphics(gcf,'figure_S4j.png','Resolution',300)
 
 close gcf
 

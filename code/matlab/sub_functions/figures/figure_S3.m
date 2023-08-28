@@ -1,4 +1,4 @@
-%% figure_S2.m
+%% figure_S3.m
 % Sub-function of Irish_Tuna.m; plot time at temperature
 
 %% Define temperature bins.
@@ -208,7 +208,7 @@ for i = [2 3 4 1 5 0] % each hotspot and outside hotspots
     end
 
     cd([fdir 'figures']);
-    exportgraphics(gcf,['figure_S2_' rg '.png'],'Resolution',300);
+    exportgraphics(gcf,['figure_S3_' rg '.png'],'Resolution',300);
 
     % close all
 

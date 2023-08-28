@@ -1,4 +1,4 @@
-%% figures_S7.m
+%% figures_S5.m
 
 %% Get Unique TOPP IDs
 
@@ -103,7 +103,7 @@ for t = 1:length(toppID)
 
     %% Save figure.
 
-    cd([fdir 'figures/S7']);
+    cd([fdir 'figures/S5']);
     exportgraphics(gcf,[num2str(toppID(t)) '_map.png'],'Resolution',300);
 
     %% Clear

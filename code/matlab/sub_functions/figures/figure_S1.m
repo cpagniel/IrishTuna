@@ -1,4 +1,4 @@
-%% figure_1a.m
+%% figure_S1.m
 % Sub-function of Irish_Tuna.m; plots SSM tracks of all tags colored by
 % year.
 
@@ -28,22 +28,31 @@ m_gshhs_i('patch',[.7 .7 .7]);
 
 hold on
 
-%% Plot SSM positions of tuna colored by year.
+%% Plot SSM positions of tuna colored by deployment year.
 
 % Set colormap of year.
-cmap1 = hot(length(unique(year(META.Date)))+1);
-cmap2 = autumn(length(unique(year(META.Date))));
-cmap = [cmap1(1:3,:); cmap2(4:end,:)];
+% cmap1 = hot(length(unique(year(META.Date)))+1);
+% cmap2 = autumn(length(unique(year(META.Date))));
+% cmap = [cmap1(1:3,:); cmap2(4:end,:)];
 
-% Get years.
-yyyy = unique(year(META.Date));
+cmap = [1,0,0; 1,0.666,0; 1,1,0; 0.298,0.902,0; 0,0.773,1;...
+        0.663,0,0.902; 1,1,1];
+
+% Get deployment year.
+toppID = unique(META.TOPPid);
+for i = 1:length(toppID)
+    META.DeploymentDate(META.TOPPid == toppID(i)) = META.Date(find(META.TOPPid == toppID(i),1));
+end
+
+yyyy = unique(year(META.DeploymentDate));
 
 % Plot each year.
-for i = 1:length(yyyy)
-    m(i) = m_plot(META.Longitude(yyyy(i) == year(META.Date)),...
-        META.Latitude(yyyy(i) == year(META.Date)),...
+for i = [5 7 3 4 6 1 2]
+    m(i) = m_plot(META.Longitude(yyyy(i) == year(META.DeploymentDate)),...
+        META.Latitude(yyyy(i) == year(META.DeploymentDate)),...
         'ko','MarkerFaceColor',cmap(i,:),'MarkerSize',3,'MarkerEdgeColor','k');
     hold on
+    pause
 end
 clear i
 
@@ -88,7 +97,7 @@ clear icon*
 %% Save figure.
 
 cd([fdir 'figures']);
-exportgraphics(gcf,'figure_1a.png','Resolution',300);
+exportgraphics(gcf,'figure_S1.png','Resolution',300);
 
 %% Clear
 
