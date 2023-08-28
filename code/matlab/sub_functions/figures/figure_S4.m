@@ -1,116 +1,491 @@
-%% figures_S7.m
+%% figure_S3
+% Sub-function of Irish_Tuna.m; plot centers of ACEs & CEs in each hotspot.
 
-%% Get Unique TOPP IDs
+%% Newfounland Basin
 
-toppID = unique(META.TOPPid);
+ind.AC = ismember(dates.AC,dates.META(META.Region == 1));
+ind.CC = ismember(dates.CC,dates.META(META.Region == 1));
 
-%% Loop Through All TOPP IDs 
+tmp_AC = AC(ind.AC,:);
+tmp_CC = CC(ind.CC,:);
 
-for t = 1:length(toppID)
+%% Newfoundland Basin - ACEs
 
-    %% Create figure and axes for bathymetry.
+% figure
+figure('Position',[667 184 685 586]);
 
-    figure('Position',[476 334 716 532]);
+LATLIMS = regions.NB.lat1; LONLIMS = [regions.NB.lon2(1) regions.NB.lon1(2)];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
 
-    %% Set projection of map.
+% bathymetry
+m_etopo2('contour',-5000:1000:-2000,'edgecolor','k','LineWidth',1);
 
-    LATLIMS = [20 70]; LONLIMS = [-80 40];
-    m_proj('miller','lon',LONLIMS,'lat',LATLIMS);
+hold on
 
-    %% Plot bathymetry.
+% plot trajectories of ACE centers
+sub_AC = tmp_AC(tmp_AC.Region == 1,:);
+trjID = unique(sub_AC.TrajectoryID);
 
-    [cs,ch] = m_etopo2('contourf',-8000:500:0,'edgecolor','none');
-
-    colormap(m_colmap('blue'));
-
-    hold on
-
-    %% Plot land.
-
-    m_gshhs_i('patch',[.7 .7 .7]);
-
-    hold on
-
-    %% Set colormap by month.
-
-    MM = unique(month(META.Date));
-    cmap = [0.122,0.122,1 ; 0,0.773,1; 0.149,0.451,0; 0.298,0.902,0;...
-        0.914,1,0.745; 1,1,0; 1,0.666,0; 1,0,0; 0.659,0,0; 0.8,0.745,0.639;...
-        0.663,0,0.902; 1,1,1];
-%     cmap = [0.122,0.122,1; 0,0.773,1; 0.149,0.451,0; 0.298,0.902,0;...
-%         0.914,1,0.745; 0.9843,0.6039,0.6000; 1,0,0; 0.659,0,0;  0.9365,0.4000,0.0681; 1,0.666,0; 0.9943,0.8627,0.7294;...
-%         0.6510,0.8078,0.8902];
-
-    %% Plot SSM Positions
-
-    tmp.lon = META.Longitude(META.TOPPid == toppID(t));
-    tmp.lat = META.Latitude(META.TOPPid == toppID(t));
-    tmp.date = META.Date(META.TOPPid == toppID(t));
-%     ind = tmp.date > datetime(2021,05,29);
-%     tmp.lon(ind) = []; tmp.lat(ind) = []; tmp.date(ind) = [];
-
-    for j = 1:length(MM)
-        if isempty(tmp.lon(MM(j) == month(tmp.date)))
-            m(j) = m_plot(-100,100,'o','MarkerFaceColor',cmap(j,:),'MarkerEdgeColor','k','MarkerSize',6);
-            hold on
-        else
-            m(j) = m_plot(tmp.lon(MM(j) == month(tmp.date)),...
-                tmp.lat(MM(j) == month(tmp.date)),...
-                'ko','MarkerFaceColor',cmap(j,:),'MarkerEdgeColor','k','MarkerSize',6);
-            hold on
-        end
-    end
-    clear j
-    clear tmp
-
-    %% Plot ICCAT management line.
-
-    m_line([-45 -45],[20 70],'linewi',2,'color','k','linestyle','--')
-
-    %% Plot hotspot boundaries.
-
-    m_line(regions.NB.bndry(1,:),regions.NB.bndry(2,:),'linewi',2,'color','k');
-
-    m_line(regions.CI.bndry(1,:),regions.CI.bndry(2,:),'linewi',2,'color','k');
-
-    m_line(regions.Biscay.bndry(1,:),regions.Biscay.bndry(2,:),'linewi',2,'color','k');
-
-    m_line(regions.WEB.bndry(1,:),regions.WEB.bndry(2,:),'linewi',2,'color','k');
-
-    m_line(regions.Med.bndry(1,:),regions.Med.bndry(2,:),'linewi',2,'color','k');
-
-    %% Create figure border.
-
-    m_grid('linewi',2,'tickdir','in','linest','none','fontsize',20);
-
-    %% Add north arrow and scale bar.
-
-    m_northarrow(-75,65,4,'type',2,'linewi',2);
-    m_ruler([.78 .98],.1,2,'fontsize',16,'ticklength',0.01);
-
-    %% Add Legend
-
-    [~,icon] = legend(m,{'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'},'FontSize',14);
-    icons = findobj(icon, 'type', 'line');
-    set(icons,'MarkerSize',12);
-    clear MM
-    clear icon*
-
-    %% Add TOPP ID
-
-    patch([0.35 0.75 0.75 0.35],[1.325 1.325 1.45 1.45],'w');
-    text(0.4,1.385,num2str(toppID(t)),'color','k','FontSize',20);
-
-    %% Save figure.
-
-    cd([fdir 'figures/S7']);
-    exportgraphics(gcf,[num2str(toppID(t)) '_map.png'],'Resolution',300);
-
-    %% Clear
-
-    clear ax* c* h* m M *LIMS
-    clear ans
-
-    close gcf
-
+for i = 1:length(trjID)
+    m_plot(sub_AC.SSHMaxLongitude(trjID(i) == sub_AC.TrajectoryID),...
+        sub_AC.SSHMaxLatitude(trjID(i) == sub_AC.TrajectoryID),'r-','LineWidth',2)
 end
+clear i
+clear trjID
+
+hold on
+
+% outline
+m_patch([regions.NB.lon2 regions.NB.lon2(1) regions.NB.lon2(1)],...
+[regions.NB.lat2 fliplr(regions.NB.lat2)],'w');
+
+m_plot(regions.NB.lon2,regions.NB.lat2,'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-49,50.5,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3a.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% Newfoundland Basin - CEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.NB.lat1; LONLIMS = [regions.NB.lon2(1) regions.NB.lon1(2)];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',-5000:1000:-2000,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of CE centers
+sub_CC = tmp_CC(tmp_CC.Region == 1,:);
+trjID = unique(sub_CC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_CC.SSHMaxLongitude(trjID(i) == sub_CC.TrajectoryID),...
+        sub_CC.SSHMaxLatitude(trjID(i) == sub_CC.TrajectoryID),'b-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% outline
+m_patch([regions.NB.lon2 regions.NB.lon2(1) regions.NB.lon2(1)],...
+[regions.NB.lat2 fliplr(regions.NB.lat2)],'w');
+
+m_plot(regions.NB.lon2,regions.NB.lat2,'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-49,50.5,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3b.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% West European Basin
+
+ind.AC = ismember(dates.AC,dates.META(META.Region == 4));
+ind.CC = ismember(dates.CC,dates.META(META.Region == 4));
+
+tmp_AC = AC(ind.AC,:);
+tmp_CC = CC(ind.CC,:);
+
+%% West European Basin - ACEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.WEB.lat1; LONLIMS = regions.WEB.lon1;
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',-5500:1000:-500,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of ACE centers
+sub_AC = tmp_AC(tmp_AC.Region == 4,:);
+trjID = unique(sub_AC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_AC.SSHMaxLongitude(trjID(i) == sub_AC.TrajectoryID),...
+        sub_AC.SSHMaxLatitude(trjID(i) == sub_AC.TrajectoryID),'r-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3c.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% West European Basin - CEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.WEB.lat1; LONLIMS = regions.WEB.lon1;
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',-5500:1000:-500,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of CE centers
+sub_CC = CC(CC.Region == 4,:);
+trjID = unique(sub_CC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_CC.SSHMaxLongitude(trjID(i) == sub_CC.TrajectoryID),...
+        sub_CC.SSHMaxLatitude(trjID(i) == sub_CC.TrajectoryID),'b-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3d.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% Coastal Ireland
+
+ind.AC = ismember(dates.AC,dates.META(META.Region == 2));
+ind.CC = ismember(dates.CC,dates.META(META.Region == 2));
+
+tmp_AC = AC(ind.AC,:);
+tmp_CC = CC(ind.CC,:);
+
+%% Coastal Ireland - ACEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.CI.lat1; LONLIMS = regions.CI.lon1;
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',-3000:500:-1000,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of ACE centers
+sub_AC = tmp_AC(tmp_AC.Region == 2,:);
+trjID = unique(sub_AC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_AC.SSHMaxLongitude(trjID(i) == sub_AC.TrajectoryID),...
+        sub_AC.SSHMaxLatitude(trjID(i) == sub_AC.TrajectoryID),'r-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_patch([regions.CI.lon2 regions.CI.lon2(1) regions.CI.lon2(1)],...
+[regions.CI.lat1(1) regions.CI.lat1(1) regions.CI.lat2(1) regions.CI.lat1(1)],'w');
+
+m_plot(regions.CI.lon2,[regions.CI.lat2(1) regions.CI.lat1(1)],'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3e.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% Coastal Ireland - CEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.CI.lat1; LONLIMS = [regions.CI.lon2(1) regions.CI.lon1(2)];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',-3000:500:-1000,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of CE centers
+sub_CC = tmp_CC(tmp_CC.Region == 2,:);
+trjID = unique(sub_CC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_CC.SSHMaxLongitude(trjID(i) == sub_CC.TrajectoryID),...
+        sub_CC.SSHMaxLatitude(trjID(i) == sub_CC.TrajectoryID),'b-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_patch([regions.CI.lon2 regions.CI.lon2(1) regions.CI.lon2(1)],...
+[regions.CI.lat1(1) regions.CI.lat1(1) regions.CI.lat2(1) regions.CI.lat1(1)],'w');
+
+m_plot(regions.CI.lon2,[regions.CI.lat2(1) regions.CI.lat1(1)],'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3f.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% Bay of Biscay
+
+ind.AC = ismember(dates.AC,dates.META(META.Region == 3));
+ind.CC = ismember(dates.CC,dates.META(META.Region == 3));
+
+tmp_AC = AC(ind.AC,:);
+tmp_CC = CC(ind.CC,:);
+
+%% Bay of Biscay - ADT
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.Biscay.lat; LONLIMS = regions.Biscay.lon;
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',[-4000:1000:-1000 -500 -250 -100],'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of ACE centers
+sub_AC = tmp_AC(tmp_AC.Region == 3,:);
+trjID = unique(sub_AC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_AC.SSHMaxLongitude(trjID(i) == sub_AC.TrajectoryID),...
+        sub_AC.SSHMaxLatitude(trjID(i) == sub_AC.TrajectoryID),'r-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3g.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% Bay of Biscay - CEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.Biscay.lat; LONLIMS = regions.Biscay.lon;
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',[-4000:1000:-1000 -500 -250 -100],'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of CE centers
+sub_CC = tmp_CC(tmp_CC.Region == 3,:);
+trjID = unique(sub_CC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_CC.SSHMaxLongitude(trjID(i) == sub_CC.TrajectoryID),...
+        sub_CC.SSHMaxLatitude(trjID(i) == sub_CC.TrajectoryID),'b-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3h.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% Mediterranean Sea
+
+ind.AC = ismember(dates.AC,dates.META(META.Region == 5));
+ind.CC = ismember(dates.CC,dates.META(META.Region == 5));
+
+tmp_AC = AC(ind.AC,:);
+tmp_CC = CC(ind.CC,:);
+
+%% Mediterranean Sea - ACEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.Med.lat1; LONLIMS = [regions.Med.lon2(1) 22];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',-5500:1000:-500,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of ACE centers
+sub_AC = tmp_AC(tmp_AC.Region == 5,:);
+trjID = unique(sub_AC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_AC.SSHMaxLongitude(trjID(i) == sub_AC.TrajectoryID),...
+        sub_AC.SSHMaxLatitude(trjID(i) == sub_AC.TrajectoryID),'r-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_patch([regions.Med.lon2(1) 5 regions.Med.lon2(1) regions.Med.lon2(1)],...
+[regions.Med.lat2(2) regions.Med.lat1(2) regions.Med.lat1(2) regions.Med.lat2(2)],'w');
+
+m_plot([regions.Med.lon2(1) 5],[regions.Med.lat2(2) regions.Med.lat1(2)],'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3i.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+%% Mediterranean Sea - CEs
+
+% figure
+figure('Position',[667 184 685 586]);
+
+LATLIMS = regions.Med.lat1; LONLIMS = [regions.Med.lon2(1) 22];
+m_proj('lambert','lon',LONLIMS,'lat',LATLIMS);
+
+% bathymetry
+m_etopo2('contour',-5500:1000:-500,'edgecolor','k','LineWidth',1);
+
+hold on
+
+% plot trajectories of CE centers
+sub_CC = tmp_CC(tmp_CC.Region == 5,:);
+trjID = unique(sub_CC.TrajectoryID);
+
+for i = 1:length(trjID)
+    m_plot(sub_CC.SSHMaxLongitude(trjID(i) == sub_CC.TrajectoryID),...
+        sub_CC.SSHMaxLatitude(trjID(i) == sub_CC.TrajectoryID),'b-','LineWidth',2)
+end
+clear i
+clear trjID
+
+% land
+m_gshhs_i('patch',[.7 .7 .7]); 
+
+hold on
+
+% outline
+m_patch([regions.Med.lon2(1) 5 regions.Med.lon2(1) regions.Med.lon2(1)],...
+[regions.Med.lat2(2) regions.Med.lat1(2) regions.Med.lat1(2) regions.Med.lat2(2)],'w');
+
+m_plot([regions.Med.lon2(1) 5],[regions.Med.lat2(2) regions.Med.lat1(2)],'k-','LineWidth',2);
+
+m_grid('linewi',2,'tickdir','in','linest','none','fontsize',22);
+
+m_northarrow(-15,58.75,1,'type',2,'linewi',2);
+m_ruler([.77 .92],1.05,2,'fontsize',14,'ticklength',0.01);
+
+cd([fdir 'figures']);
+exportgraphics(gcf,'figure_S3j.png','Resolution',300)
+
+close gcf
+
+clear ans
+
+clear sub*
+clear tmp*
+clear ind
+clear L*
